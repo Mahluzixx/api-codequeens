@@ -5,26 +5,56 @@ app.use(express.json());
 // criar um array chamado "pessoas"
 
 let pessoas = [
-    (nome:'yas', idade:14,altura:1,55),
-    ]
-    [
-        (nome:'evelyn', idade:16,altura:1,57)
-    ]
-    [
-        (nome:'gabi', idade:15,altura:1,57)
-    ]
-    [  (nome:'gabi2', idade:14,altura:1,60)
-    ]
-    [
-      (nome:'laura', idade:14,altura:1,53)
-    ]
-app.get('/pessoas', (req, res) => {
-    res.json({mensagem:'API de pessoas funcionando'});
+    {id: 1,nome:'yas', idade:'14',altura:'1,55'},
+    {id: 2,nome:'evelyn', idade:'16',altura:'1,57'},
+    {id: 3,nome:'gabi', idade:'15',altura:'1,57'},
+    {id: 4,nome:'gabi2', idade:'14',altura:'1,60'},
+    {id: 5,nome:'laura', idade:'14',altura:'1,53'},
+]
+app.get('/', (req, res) => {
+    res.json({ mensagem: 'API de pessoas funcionando' });
 
 });
+
+app.get('/pessoas', (req, res) => {
+    res.json(pessoas)
+
+});
+
+app.post("/pessoas", (req, res) => {
+    const {nome, idade} = req.body
+    const newUser = {
+        id: pessoas.length + 1,
+        nome,
+        idade,
+    };
+    console.log("novos dados:  ", newUser)
+    pessoas.push (newUser);
+    res.status(201).json (newUser); //codigo de criação com sucesso
+
+});
+ 
+// API do tipo GET para buscar 1 pessoa só por Id
+//rota:http://localhost:3000/pessoas/2
+
+app.get("/pessoas/:id", (req, res) => {
+    const id = parseInt (req.params.id);
+    const pessoa = pessoas.find(u => u.id === id);
+
+    if (!pessoa){
+        return res.status(404).json({error: "pessoa não encontrada"});
+    }
+
+    res.json(pessoa);
+});
+
+
+
+
+
+
 
 const PORT = 3000;
 app.listen(PORT, () => {
- console.log ('servido rodando em http://localhost:${port}');
+    console.log(`servido rodando em http://localhost:${PORT}`);
 });
-
